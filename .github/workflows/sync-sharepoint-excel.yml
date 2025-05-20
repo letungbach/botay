@@ -12,18 +12,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Ensure sync directory exists
+        run: mkdir -p sync
+
       - name: Download Excel from SharePoint
         run: |
-          curl -L -o sharepoint_file.xlsx "https://trangantravel-my.sharepoint.com/:x:/g/personal/ly_opr_trangantravel_com_vn/EfdJWaw7LFFLk883msaMOXIByCzy5UdfWqPS5HQzBfLU7A?rtime=DEpsHGuX3Ug"
+          curl -L -o sync/sharepoint_file.xlsx "https://trangantravel-my.sharepoint.com/:x:/g/personal/ly_opr_trangantravel_com_vn/EfdJWaw7LFFLk883msaMOXIByCzy5UdfWqPS5HQzBfLU7A?rtime=DEpsHGuX3Ug"
 
       - name: Commit and push if file changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add sharepoint_file.xlsx
+          git add sync/sharepoint_file.xlsx
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Update Excel file from SharePoint"
+            git commit -m "Update SharePoint Excel in sync folder"
             git push
           fi
