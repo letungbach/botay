@@ -15,7 +15,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}  # Use the GitHub token for authentication
+          token: ${{ secrets.PAT_TOKEN }}  # Use the Personal Access Token for authentication
 
       - name: Ensure sync directory exists
         run: mkdir -p sync
@@ -25,6 +25,8 @@ jobs:
           curl -L -o sync/sharepoint_file.xlsx "https://trangantravel-my.sharepoint.com/:x:/g/personal/ly_opr_trangantravel_com_vn/EfdJWaw7LFFLk883msaMOXIByCzy5UdfWqPS5HQzBfLU7A?rtime=DEpsHGuX3Ug"
 
       - name: Commit and push if file changed
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
