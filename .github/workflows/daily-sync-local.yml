@@ -1,0 +1,35 @@
+name: Daily Sync Local
+
+on:
+  schedule:
+    - cron: "5 0 * * *"  # Runs at 00:05 UTC (7:05 AM Vietnam time)
+  workflow_dispatch:      # Allows manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  sync-changes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create timestamp
+        run: |
+          echo "Last sync: $(date -u)" > last_sync.txt
+          
+      - name: Commit and push if changed
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add last_sync.txt
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Daily sync update $(date -u)"
+            git push
+          fi
